@@ -11,7 +11,6 @@ use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Interfaces\RouteResolverInterface;
 use Slim\Interfaces\MiddlewareDispatcherInterface;
 use Slim\Factory\AppFactory as SlimAppFactory;
-use Intoy\HebatFactory\App;
 
 class AppFactory extends SlimAppFactory 
 {

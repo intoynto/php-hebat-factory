@@ -6,7 +6,6 @@ namespace Intoy\HebatFactory;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Middleware\{ErrorMiddleware as SlimErrorMiddleware};
-use Intoy\HebatFactory\Handlers\ShutdownHandler;
 
 abstract class Kernel
 {
