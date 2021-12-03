@@ -79,24 +79,17 @@ abstract class Kernel
         return [...$this->loaders,...$this->groupLoaders[$prefix]];
     }
 
+    /**
+     * callable yang akan dipanggil 
+     * oleh app ketikan akan menjalankan request
+     */
+    public function registerShutdownHandler(Request $request)
+    {
+
+    }
 
     protected function onFinishSetup()
     {
-    }
-
-
-    public function registerShutdownHandler(Request $request)
-    {
-        return;
-        if($this->errorMiddleware)
-        {
-            $errorHandle=$this->errorMiddleware->getDefaultErrorHandler();
-            if($errorHandle instanceof \Slim\Handlers\ErrorHandler)
-            {
-                $shutdownHandler=new ShutdownHandler($request, $errorHandle,!is_production());
-                register_shutdown_function($shutdownHandler);
-            }
-        }
     }
     
 

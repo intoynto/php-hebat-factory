@@ -15,8 +15,6 @@
     ],
     "require": {
         "php-di/php-di": "^6.3",
-        "vlucas/phpdotenv": "^5.4",
-        "monolog/monolog": "^2.3",
         "nyholm/psr7": "^1.4",
         "nyholm/psr7-server": "^1.0",
         "slim/slim": "^4.9",
