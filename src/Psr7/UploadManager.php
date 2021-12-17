@@ -147,15 +147,15 @@ class UploadManager
 
     /**
      * Move upload to directory with name
-     * @param string $name string $_FILES key
+     * @param string $post_name string $_FILES key
      * @param string $directory string directory name
      * @param string $newFileName string new name of file
      * @return string
      * @throws \Exception
      */
-    public function move(string $name, string $directory, string $newFileName=""):string
+    public function move(string $post_name, string $directory, string $newFileName=""):string
     {
-        $f=$this->getByName($name);
+        $f=$this->getByName($post_name);
         if(!$f instanceof UploadedFileInterface)
         {
             throw new \Exception('Invalid params. Use params instance of ServerRequestInface or UploadedFileInstarface.');
@@ -193,6 +193,29 @@ class UploadManager
 
         $f->moveTo($directory.DIRECTORY_SEPARATOR.$newFileName);
         return $newFileName;
+    }
+
+
+    /**
+     * Handle post upload to base 64
+     * @param string $post_name
+     * @return string
+     * @throws \Exception 
+     */
+    public function toBase64(string $post_name)
+    {
+        $f=$this->getByName($post_name);
+        if(!$f instanceof UploadedFileInterface)
+        {
+            throw new \Exception('Invalid params. Use params instance of ServerRequestInface or UploadedFileInstarface.');
+        }
+
+        $extension=pathinfo($f->getClientFilename(),PATHINFO_EXTENSION);
+        $extension=strtolower($extension);
+        $file_type=$f->getClientMediaType();
+        $stream=$f->getStream();
+        $contents=$stream->getContents(); // file_get_contents($tmp);
+        return 'data:'.$file_type.';base64,'.base64_encode($contents);
     }
 
 
