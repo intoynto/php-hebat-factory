@@ -53,6 +53,12 @@ abstract class Kernel
     protected $errorMiddleware;
 
 
+    /**
+     * @var array<string|callbale>
+     */
+    protected $errorRenders=[];
+
+
     public function __construct(App $app)
     {
         $this->app=$app;
@@ -87,6 +93,21 @@ abstract class Kernel
 
     }
 
+    /**
+     * Register an error render form a specific content-type
+     * 
+     * @param string $contextType application/json,application/xml,text/xml,text/html,text/plain
+     * @param string|callable $errorRender the error renderer
+     */
+    public function registerErrorRender(string $contextType,$errorRender)
+    {
+        $contextType=strtolower($contextType);
+        $this->errorRenders[$contextType]=$errorRender;
+    }
+
+    /**
+     * Callable if finish setup
+     */
     protected function onFinishSetup()
     {
     }
