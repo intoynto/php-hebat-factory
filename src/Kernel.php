@@ -52,6 +52,11 @@ abstract class Kernel
      */
     protected $errorMiddleware;
 
+    /**
+     * @var bool
+     */
+    protected $useShutdownHandler=false;
+
 
     /**
      * @var array<string|callbale>
@@ -86,11 +91,20 @@ abstract class Kernel
 
     /**
      * callable yang akan dipanggil 
-     * oleh app ketikan akan menjalankan request
+     * oleh app ketika akan menjalankan request
      */
     public function registerShutdownHandler(Request $request)
     {
 
+    }
+
+    /**
+     * method set useShutdownHandler
+     * @param bool $value
+     */
+    public function setUseShutdownHandler(bool $value)
+    {
+        $this->useShutdownHandler=$value;
     }
 
     /**
