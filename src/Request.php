@@ -5,7 +5,7 @@ namespace Intoy\HebatFactory;
 
 use Nyholm\Psr7\ServerRequest;
 
-class Request extends ServerRequest
+class Request extends ServerRequest 
 {
     public function isPost():bool
     {

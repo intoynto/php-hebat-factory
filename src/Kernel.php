@@ -64,6 +64,12 @@ abstract class Kernel
     protected $errorRenders=[];
 
 
+    /**
+     * @var array 
+     */
+    protected $unusedMiddlewares=[];
+
+
     public function __construct(App $app)
     {
         $this->app=$app;
@@ -119,6 +125,39 @@ abstract class Kernel
         $this->errorRenders[$contextType]=$errorRender;
     }
 
+
+    public function unsetMiddleware($prefix, $middlewareClass)
+    {
+        if(!$middlewareClass || !is_string($middlewareClass))
+        {
+            return;
+        }
+
+        $this->unusedMiddlewares[]=[$prefix,$middlewareClass];
+    }
+
+
+    protected function applyUnusedMiddleware()
+    {
+        foreach($this->unusedMiddlewares as $array)
+        {
+            $prefix=$array[0];
+            $middlewareClass=$array[1];
+
+            if($prefix==="")
+            {
+                array_splice($this->middleware,array_search($middlewareClass,$this->middleware),1);
+            }
+            elseif(in_array($prefix,array_keys($this->middlewareGroups)))
+            {
+                array_splice($this->middlewareGroups[$prefix],array_search($middlewareClass,$this->middlewareGroups[$prefix]),1);
+            }
+        }
+
+        $after_middleware=$this->middleware;
+        $after_groups=$this->middlewareGroups;
+    }
+
     /**
      * Callable if finish setup
      */
@@ -131,9 +170,13 @@ abstract class Kernel
     {
         $app=$this->getApp();
         $kernel=$this->getKernel();
+
+        $this->applyUnusedMiddleware(); //remove unused middleware
+
         $nameSpaceLoaders=$this->loaders;
         Loader::setup($app,$kernel,$nameSpaceLoaders);
 
+        
         $this->onFinishSetup();
     }
 }

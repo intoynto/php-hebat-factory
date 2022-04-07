@@ -5,7 +5,6 @@ namespace Intoy\HebatFactory;
 
 use Nyholm\Psr7\Response as NyholmResponse;
 
-
 class Response extends NyholmResponse
 {
     public function withJson($value):self
