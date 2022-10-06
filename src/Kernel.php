@@ -7,6 +7,31 @@ namespace Intoy\HebatFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Middleware\{ErrorMiddleware as SlimErrorMiddleware};
 
+/**
+ * Petunjuk penggunaan Middleware
+ * -------------------------------
+ * Middleware adalah lapisan konsentris yang mengelilingi aplikasi inti.
+ * Struktur konsentris meluas ke luar saat lapisan middleware baru ditambahkan.
+ * 
+ * Proses objek Request melintasi struktur middleware dari luar ke dalam.
+ * Request akan memasuki middleware terluar, lalu middleware berikutnya, dan seterusnya, hingga akhirnya tiba di aplikasi inti.
+ * Setelah aplikasi inti memproses rute yang sesuai, objek Response yang dihaslikan melintasi struktur middleware dari dalam ke luar. 
+ * Objek Reponse akhir keluar dari middleware terluar, diserialisasi menjadi Response HTTP Mentah, dan dikembalikan ke client HTTP.   
+ * 
+ * Jika diilustrasikan, misalnya terdapat 2 middleware dengan urutan :
+ * 1. A
+ * 2. B
+ * 3. C
+ * Proses request akan melewati middleware A, kemudian middleware B, middleware C, lanjut sampai ke aplikasi inti.
+ * Aplikasi inti akan memproses Request dan mengembalikan Response.
+ * Objek Response yang dihasilkan oleh aplikasi inti, akan melewati middleware C, kemudian middleware B, terakhir middleware A, 
+ * sampai akhirnya object Response diserialisasi menjadi Response HTTP mentah untuk client HTTP.
+ * Middleware A adalah bagian terluar, Middleware C adalah middleware bagian terdalam.
+ * 
+ * Untuk lebih lengkapnya lihat :
+ * https://www.slimframework.com/docs/v4/concepts/middleware.html 
+ */
+
 abstract class Kernel
 {
 
@@ -24,16 +49,12 @@ abstract class Kernel
 
     /**
      * GLOBAL Middleware
-     * Middleware proses di mulai dari bawah ke atas
-     * Oleh karena itu RouteProvider akan mereverse ulang array dari bawah ke atas
      * @var array
      */
     public array $middleware=[];
 
     /**
      * Route Group Middleware
-     * Middleware proses di mulai dari bawah ke atas
-     * Oleh karena itu RouteProvider harus mereverse ulang array dari bawah ke atas
      * @var array
      */
     public array $middlewareGroups=[
