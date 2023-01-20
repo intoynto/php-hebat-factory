@@ -45,7 +45,7 @@ abstract class Kernel
      * Global loader
      * @var string[]
      */
-    protected $loaders=[];
+    public $loaders=[];
 
     /**
      * GLOBAL Middleware
