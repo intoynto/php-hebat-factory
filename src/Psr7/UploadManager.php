@@ -9,43 +9,76 @@ use Psr\Http\Message\UploadedFileInterface;
 class UploadManager 
 {
     public const ALLOWS_EXT_ALL=[
-        "txt",
-        "pdf",
-        "xls",
-        "xlsx",
-        "doc",
-        "docx",
-        "bmp",
-        "jpg",
-        "jpeg",
-        "png",
-        "rar",
-        "zip",
+        'txt',
+        'pdf',
+        'xls',
+        'xlsx',
+        'doc',
+        'docx',
+        'bmp',
+        'jpg',
+        'jpeg',
+        'png',
+        'rar',
+        'zip',
     ];
 
     public const ALLOWS_EXT_IMAGE=[
-        "bmp",
-        "jpg",
-        "jpeg",
-        "png",
-        "webp", 
+        'bmp',
+        'jpg',
+        'jpeg',
+        'png',
+        'webp', 
     ];
 
     public const ALLOWS_EXT_IMAGE_RESIZE=[
-        "bmp",
-        "jpg",
-        "jpeg",
-        "png",
+        'bmp',
+        'jpg',
+        'jpeg',
+        'png',
     ];
+
     /**
      * @var array<UploadedFileInterface>
      */
     protected $items=[];
 
+    /**
+     * @var string
+     */
+    protected $prefix="";
+
 
     public function __construct(Request $request)
     {
         $this->items=$request->getUploadedFiles();        
+    }
+
+    /**
+     * Set Prefix Upload
+     * @param string
+     * @return self
+     */
+    public function setPrefix($prefix)
+    {
+        if(is_string($prefix))
+        {
+            $prefix=trim((string)$prefix);
+            if(strlen($prefix)>0)
+            {
+                $this->prefix=$prefix;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this->prefix;
     }
 
     /**
@@ -64,7 +97,7 @@ class UploadManager
      * @param string $name
      * @return string|null
      */
-    public function getErrorUpload(string $name)
+    public function getErrorUpload($name)
     {
         $error=UPLOAD_ERR_OK;
         $f=$this->getByName($name);
@@ -76,25 +109,25 @@ class UploadManager
         switch($error)
         {
             case UPLOAD_ERR_INI_SIZE:
-                 return "Upload file melebihi maximum upload file size";
+                 return 'Upload file melebihi maximum upload file size';
                  break;
             case UPLOAD_ERR_FORM_SIZE:
-                 return "Upload file melebihi maximum diretive spesifik HTML form";
+                 return 'Upload file melebihi maximum diretive spesifik HTML form';
                  break;
             case UPLOAD_ERR_PARTIAL:
-                 return "Upload file hanya untuk partial upload";
+                 return 'Upload file hanya untuk partial upload';
                  break;
             case UPLOAD_ERR_NO_FILE:
-                 return "Tidak ada file upload";
+                 return 'Tidak ada file upload';
                  break;
             case UPLOAD_ERR_NO_TMP_DIR:
-                return "Tidak ada temporary folder";
+                return 'Tidak ada temporary folder';
                 break;
             case UPLOAD_ERR_CANT_WRITE:
-                return "Gagal mencetak file ke-disk";
+                return 'Gagal mencetak file ke-disk';
                 break;
             case UPLOAD_ERR_EXTENSION:
-                return "File upload tidak mendukung extensi";
+                return 'File upload tidak mendukung extensi';
                 break;
             default :
                return null;
@@ -108,7 +141,7 @@ class UploadManager
      * @param string $name
      * @return bool
      */
-    public function hasUpload(string $name)
+    public function hasUpload($name)
     {
         $f=$this->getByName($name);
         if($f instanceof UploadedFileInterface)
@@ -126,7 +159,7 @@ class UploadManager
      * @param array $extensions 
      * @return bool
      */
-    public function hasAllowExtensions(string $name, array $extensions)
+    public function hasAllowExtensions($name, $extensions)
     {
         $f=$this->getByName($name);
         if($f instanceof UploadedFileInterface)
@@ -153,7 +186,7 @@ class UploadManager
      * @return string
      * @throws \Exception
      */
-    public function move(string $post_name, string $directory, string $newFileName=""):string
+    public function move($post_name, $directory, $newFileName="")
     {
         $f=$this->getByName($post_name);
         if(!$f instanceof UploadedFileInterface)
@@ -177,18 +210,24 @@ class UploadManager
         }
         else {
             /// test extension
-            $newFileName=explode(".",$newFileName);
+            $newFileName=explode('.',$newFileName);
             if(count($newFileName)>0)
             {
                 $last=strtolower(trim((string)end($newFileName)));
-                $newFileName=implode(".",$newFileName);
+                $newFileName=implode('.',$newFileName);
                 if($last!==$ext){
-                    $newFileName.=".".$ext;
+                    $newFileName.='.'.$ext;
                 }
             }
             else {
-                $newFileName=implode(".",$newFileName).".".$ext;
+                $newFileName=implode('.',$newFileName).'.'.$ext;
             }
+        }
+
+        // modify new filename
+        if($this->prefix)
+        {
+            $newFileName=$this->prefix.'.'.$newFileName;
         }
 
         $f->moveTo($directory.DIRECTORY_SEPARATOR.$newFileName);
@@ -202,7 +241,7 @@ class UploadManager
      * @return string
      * @throws \Exception 
      */
-    public function toBase64(string $post_name)
+    public function toBase64($post_name)
     {
         $f=$this->getByName($post_name);
         if(!$f instanceof UploadedFileInterface)
@@ -218,8 +257,10 @@ class UploadManager
         return 'data:'.$file_type.';base64,'.base64_encode($contents);
     }
 
-
-    public static function removeFile(string $directory, $filename=""):bool
+    /**
+     * @return bool
+     */
+    public static function removeFile($directory, $filename="")
     {
         $filename=trim((string)$filename);
         $fullfilename=$directory.$filename;

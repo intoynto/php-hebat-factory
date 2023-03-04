@@ -2,6 +2,7 @@
     "name": "intoy/hebat-factory",
     "description": "Lib factory app",
     "license": "MIT",
+    "homepage": "https://github.com/intoynto/php-hebat-factory",
     "autoload": {
         "psr-4": {
             "Intoy\\HebatFactory\\": "src/"
