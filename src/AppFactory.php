@@ -15,9 +15,9 @@ use Slim\Factory\AppFactory as SlimAppFactory;
 class AppFactory extends SlimAppFactory 
 {
     /**
-     * @var App
+     * @var App|null
      */
-    public static App $app;    
+    public static App|null $app=null;    
 
     /**
      * @param ResponseFactoryInterface|null         $responseFactory
